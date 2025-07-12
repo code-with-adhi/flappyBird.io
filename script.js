@@ -51,6 +51,8 @@ window.onload = function(){
     requestAnimationFrame(update);
     setInterval(placePipes, 1500);
     document.addEventListener("keydown", birdJump);
+    document.addEventListener("click", birdJump);
+    document.addEventListener("touchstart", birdJump);
 }
 
 function update(){
@@ -134,7 +136,11 @@ function placePipes(){
 
 function birdJump(event){
     if(event.code == "Space" || event.code == "ArrowUp"){
-        velocityY =-6
+        velocityY =-6;
+    }
+
+    if(event.type == "click" || event.type == "touchstart"){
+        velocityY =-6;
     }
 
     // reset
