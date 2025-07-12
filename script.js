@@ -139,7 +139,7 @@ function birdJump(event){
         velocityY =-6;
     }
 
-    if(event.type == "click" || event.type == "touchstart"){
+    else if(event.type == "click" || event.type == "touchstart"){
         velocityY =-6;
     }
 
