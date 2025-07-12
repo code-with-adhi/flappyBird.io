@@ -5,10 +5,12 @@ let flappy;
 
 
 //backgrounds
-let backgrounds = ["./assets/background-day.png", "./assets/background-night.png"];
+let backgrounds = [new Image(), new Image()];
+backgrounds[0].src = "./assets/background-day.png";
+backgrounds[1].src= "./assets/background-night.png";
+
 let crIndx = 0;
-let bgimg = new Image();
-bgimg.src = backgrounds[crIndx];
+let bgimg = backgrounds[crIndx];
 
 //physics
 let velocityx = -2;//pipe speed
@@ -112,7 +114,8 @@ function update(){
         let go = new Image;
         go.src = "./assets/gameover.png";
         context.drawImage(go,(bgwidth -192)/2 , (bgheight-42)/2 , 192, 42 );
-        bgimg.src = backgrounds[0];
+        bgimg = backgrounds[0];
+        crIndx = 0;
     }
 }
 
@@ -122,7 +125,7 @@ function changebg() {
         let newIndex = (Math.floor(score / 10)) % backgrounds.length;
         if (newIndex !== crIndx) {
             crIndx = newIndex;
-            bgimg.src = backgrounds[crIndx];
+            bgimg = backgrounds[crIndx];
         }
     }
 }
