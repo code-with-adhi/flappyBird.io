@@ -2,10 +2,7 @@ let bgheight = 624;
 let bgwidth = 336;
 let context;
 let flappy;
-let pipeInterval;
-let gamestarted = false;
-let readyImg = new Image();
-readyImg.src = "./assets/ready.png";
+
 
 //backgrounds
 let backgrounds = [new Image(), new Image()];
@@ -61,7 +58,7 @@ window.onload = function(){
     context.drawImage(up_pipe, 3*(bgwidth/4), 10, 320, 52);
     
     requestAnimationFrame(update);
-
+    setInterval(placePipes, 1500);
     document.addEventListener("keydown", birdJump);
     document.addEventListener("click", birdJump);
     document.addEventListener("touchstart", birdJump);
@@ -69,57 +66,48 @@ window.onload = function(){
 
 function update(){
     requestAnimationFrame(update);
+    if(gameover){
+        return;
+    }
     context.clearRect(0,0,bgwidth, bgheight);
 
 // bg
     context.drawImage(bgimg, 0,0, bgwidth,bgheight);
 
 //bird
-context.drawImage(pic, flappy_bird.x, flappy_bird.y, flappy_bird.width, flappy_bird.height);
-
-if(!gamestarted){    
-    context.drawImage(readyImg, (bgwidth - 184)/2, (bgheight-276)/2,184,276);
-    return;
-    }
-
-if(!gameover){
     velocityY += gravity;
     //flappy_bird.y += velocityY; contantly goes up
     flappy_bird.y = Math.max(0, velocityY+flappy_bird.y);
+    context.drawImage(pic, flappy_bird.x, flappy_bird.y, flappy_bird.width, flappy_bird.height)
+
     if (flappy_bird.y>bgheight){
         gameover = true;
     }
-}
+
 //pipe
     for(let i=0; i < pipeArray.length; i++){
         let pipe = pipeArray[i];
-        if(!gameover){
-            pipe.x += velocityx;
-
-            if(!pipe.passed && flappy_bird.x > pipe.x + pipeWidth){
-                score += 0.5;
-                pipe.passed = true;
-
-                changebg();
-            }
-
-            if(collide(flappy_bird, pipe)){
-                gameover = true;
-            }
-        }
+        pipe.x += velocityx;
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
-    } 
 
-if(gamestarted && !gameover){
+        if(!pipe.passed && flappy_bird.x > pipe.x + pipeWidth){
+            score += 0.5;
+            pipe.passed = true;
+
+            changebg();
+        }
+
+        if(collide(flappy_bird, pipe)){
+            gameover = true;
+        }
+    }
+
     while(pipeArray.length >0 && pipeArray[0].x < 0-pipeWidth){
         pipeArray.shift();// removes the out of frame pipes
     }
-}
-    context.fillStyle = "red";
+
+    context.fillStyle = "white";
     context.font = " 45px sans-serif";
-    context.lineWidth = 2;
-    context.strokeStyle = "black";
-    context.strokeText(score,5,45);
     context.fillText(score, 5, 45);
 
     if(gameover){
@@ -128,8 +116,6 @@ if(gamestarted && !gameover){
         context.drawImage(go,(bgwidth -192)/2 , (bgheight-42)/2 , 192, 42 );
         bgimg = backgrounds[0];
         crIndx = 0;
-
-        return;
     }
 }
 
@@ -178,12 +164,6 @@ function placePipes(){
 }
 
 function birdJump(event){
-    if(!gamestarted){
-        gamestarted = true;
-        pipeInterval = setInterval(placePipes, 1500);
-        return;
-    }
-
     if(event.code == "Space" || event.code == "ArrowUp"){
         velocityY =-6;
     }
@@ -198,8 +178,6 @@ function birdJump(event){
         pipeArray = [];
         score = 0;
         gameover = false;
-        gamestarted = false;
-        clearInterval(pipeInterval);
     }
 }
 
