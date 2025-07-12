@@ -3,6 +3,13 @@ let bgwidth = 336;
 let context;
 let flappy;
 
+
+//backgrounds
+let backgrounds = ["./assets/background-day.png", "./assets/background-night.png"];
+let crIndx = 0;
+let bgimg = new Image();
+bgimg.src = backgrounds[crIndx];
+
 //physics
 let velocityx = -2;//pipe speed
 let velocityY = 0;// bird jump speed
@@ -61,6 +68,10 @@ function update(){
         return;
     }
     context.clearRect(0,0,bgwidth, bgheight);
+
+// bg
+    context.drawImage(bgimg, 0,0, bgwidth,bgheight);
+
 //bird
     velocityY += gravity;
     //flappy_bird.y += velocityY; contantly goes up
@@ -80,6 +91,8 @@ function update(){
         if(!pipe.passed && flappy_bird.x > pipe.x + pipeWidth){
             score += 0.5;
             pipe.passed = true;
+
+            changebg();
         }
 
         if(collide(flappy_bird, pipe)){
@@ -99,8 +112,21 @@ function update(){
         let go = new Image;
         go.src = "./assets/gameover.png";
         context.drawImage(go,(bgwidth -192)/2 , (bgheight-42)/2 , 192, 42 );
+        bgimg.src = backgrounds[0];
     }
 }
+
+function changebg() {
+    // Change background every time score reaches a multiple of 10
+    if (Math.floor(score) % 10 === 0) {
+        let newIndex = (Math.floor(score / 10)) % backgrounds.length;
+        if (newIndex !== crIndx) {
+            crIndx = newIndex;
+            bgimg.src = backgrounds[crIndx];
+        }
+    }
+}
+
 
 function placePipes(){
     if(gameover){
